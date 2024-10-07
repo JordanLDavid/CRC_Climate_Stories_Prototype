@@ -5,12 +5,21 @@ from bson.objectid import ObjectId
 from marshmallow import Schema, fields, ValidationError
 from flask_cors import CORS
 import pdb
+import os
 
 app = Flask(__name__)
 CORS(app)
 
+# Check if running locally
+if os.path.exists('.env'):
+    from dotenv import load_dotenv
+    load_dotenv()  # Load environment variables from .env file
+
+# Now retrieve the MongoDB URI
+mongo_uri = os.getenv('MONGODB_URI')
+
 # Configure MongoDB
-app.config["MONGO_URI"] = "mongodb+srv://jordanlenarddavid:zfKBLXpAmkSjnzPI@prototypecrud.mg0mb.mongodb.net/prototype_map"  # Change this to your MongoDB URI
+app.config["MONGO_URI"] = mongo_uri  # Change this to your MongoDB URI
 mongo = PyMongo(app)
 collection = mongo.db.stories
 
