@@ -1,5 +1,6 @@
 import datetime
 from flask import Flask, jsonify, request
+from swagger import init_swagger
 from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
 from marshmallow import Schema, fields, ValidationError
@@ -9,6 +10,7 @@ import os
 
 app = Flask(__name__)
 CORS(app)
+init_swagger(app)
 
 # Check if running locally
 if os.path.exists('.env'):
@@ -38,11 +40,28 @@ class TagSchema(Schema):
 # Initialize the schema instance
 post_schema = PostSchema()
 tag_schema = TagSchema()
+# Swagger definition for Post
+# Swagger definition for Post
 
 # CREATE (Insert a new document)
 # Route to create a new post document
 @app.route('/posts/create', methods=['POST'])
 def create():
+    """
+    Create a new post
+    ---
+    parameters:
+      - name: post
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/Post'
+    responses:
+      201:
+        description: Post created
+      400:
+        description: Validation error
+    """
     try:
         # Validate and deserialize the request JSON
         data = post_schema.load(request.json)
@@ -60,6 +79,24 @@ def create():
 # Example route to retrieve all posts
 @app.route('/posts', methods=['GET'])
 def get_posts():
+    """
+    Get all posts with optional tag filters
+    ---
+    parameters:
+      - name: tags
+        in: query
+        type: array
+        items:
+          type: string
+        collectionFormat: multi  # This allows multiple tags
+        required: false
+        description: Optional list of tags to filter posts
+    responses:
+      200:
+        description: A list of posts
+      400:
+        description: input validation error
+    """
     #documents = list(collection.find())
     #for document in documents:
         #document['_id'] = str(document['_id'])  # Convert ObjectId to string
@@ -85,6 +122,28 @@ def get_posts():
 # UPDATE (Modify a document by ID)
 @app.route('/posts/update/<id>', methods=['PUT'])
 def update_post(id):
+    """
+    Update a post by ID
+    ---
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: string
+        description: The ID of the post to update
+      - name: post
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/Post'
+    responses:
+      200:
+        description: Post updated
+      400:
+        description: Invalid post ID or validation error
+      404:
+        description: Post not found
+    """
     try:
         # Validate the post_id to ensure it's a valid ObjectId
         if not ObjectId.is_valid(id):
@@ -112,6 +171,23 @@ def update_post(id):
 # DELETE (Delete a document by ID)
 @app.route('/posts/delete/<id>', methods=['DELETE'])
 def delete_post(id):
+    """
+    Delete a post by ID
+    ---
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: string
+        description: The ID of the post to delete
+    responses:
+      200:
+        description: Post deleted
+      400:
+        description: Invalid post ID
+      404:
+        description: Post not found
+    """
     try:
         # Validate the post_id to ensure it's a valid ObjectId
         if not ObjectId.is_valid(id):
