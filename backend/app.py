@@ -5,12 +5,9 @@ from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
 from marshmallow import Schema, fields, ValidationError
 from flask_cors import CORS
-import pdb
+# import pdb // for debugging
 import os
-from flask_admin import Admin
-from flask_admin.contrib.pymongo import ModelView
-from wtforms import form, fields as wtforms_fields, validators
-
+from admin import init_admin
 
 app = Flask(__name__)
 CORS(app)
@@ -32,56 +29,7 @@ mongo = PyMongo(app)
 collection = mongo.db.stories
 
 # Initialize Flask-Admin
-admin = Admin(app, name='Post Moderation', template_mode='bootstrap3')
-
-class PostForm(form.Form):
-  title = wtforms_fields.StringField('Title')
-  description = wtforms_fields.TextAreaField('Description')  # For content['description']
-  image = wtforms_fields.StringField('Image URL', [validators.Optional()])  # Optional for content['image']
-  latitude = wtforms_fields.FloatField('Latitude')  # For location['coordinates'][1]
-  longitude = wtforms_fields.FloatField('Longitude')  # For location['coordinates'][0]
-  tags = wtforms_fields.StringField('Tags')
-  status = wtforms_fields.SelectField('Status', choices=[
-      ('pending', 'Pending'),
-      ('approved', 'Approved'),
-      ('rejected', 'Rejected')
-  ])
-
-class PostView(ModelView):
-  column_list = ('title', 'content', 'location', 'tags', 'created_at', 'status')
-  column_sortable_list = ('title', 'created_at', 'status')
-  #column_filters = ('title', 'tags', 'status')
-  form = PostForm
-
-  def on_model_change(self, form, model, is_created):
-      model['updated_at'] = datetime.datetime.now(datetime.timezone.utc)
-      if 'tags' in model and isinstance(model['tags'], str):
-          model['tags'] = [tag.strip() for tag in model['tags'].split(',')]
-      # Handling 'description' and optional 'image' (string to dictionary)
-      if 'description' in model and isinstance(model['description'], str):
-          model['content'] = {'description': model['description']}
-          if 'image' in form and form.image.data:  # Only include image if provided
-              model['content']['image'] = form.image.data
-      if 'latitude' in model and 'longitude' in model:
-          model['location'] = {
-              'type': 'Point',
-              'coordinates': [form.longitude.data, form.latitude.data]
-          }
-
-  def on_form_prefill(self, form, id):
-      model = self.get_one(id)
-      if 'tags' in model and isinstance(model['tags'], list):
-          form.tags.data = ', '.join(model['tags'])
-      if 'content' in model and isinstance(model['content'], dict):
-          form.description.data = model['content'].get('description', '')
-          form.image.data = model['content'].get('image', '')
-      if 'location' in model and isinstance(model['location'], dict):
-          coordinates = model['location'].get('coordinates', [0, 0])
-          form.longitude.data = coordinates[0]  # Longitude
-          form.latitude.data = coordinates[1]  # Latitude
-
-# Add view to Flask-Admin
-admin.add_view(PostView(collection, 'Posts'))
+admin = init_admin(app, collection)
 
 # Define the schema for input validation using Marshmallow
 class PostSchema(Schema):
