@@ -9,7 +9,7 @@ from flask_cors import CORS
 import os
 from admin import init_admin
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder="templates")
 CORS(app)
 init_swagger(app)
 
