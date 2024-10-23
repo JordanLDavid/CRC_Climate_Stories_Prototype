@@ -1,12 +1,13 @@
 import datetime
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, session
 from swagger import init_swagger
 from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
 from marshmallow import Schema, fields, ValidationError
 from flask_cors import CORS
-# import pdb // for debugging
 import os
+
+from admin.auth import init_auth
 from admin import init_admin
 
 app = Flask(__name__, template_folder="templates")
@@ -16,20 +17,29 @@ init_swagger(app)
 # Check if running locally
 if os.path.exists('.env'):
     from dotenv import load_dotenv
-    load_dotenv()  # Load environment variables from .env file
+    load_dotenv()
 
 # Now retrieve the MongoDB URI
 mongo_uri = os.getenv('MONGODB_URI')
 secret_key = os.getenv('SECRET_KEY')
 
-# Configure MongoDB
-app.config["MONGO_URI"] = mongo_uri  # Change this to your MongoDB URI
-app.config['SECRET_KEY'] = secret_key 
+# Configure MongoDB and Flask session
+app.config["MONGO_URI"] = mongo_uri
+app.config['SECRET_KEY'] = secret_key  # This is important for sessions
+app.config['PERMANENT_SESSION_LIFETIME'] = datetime.timedelta(minutes=60)  # Optional: set session lifetime
 mongo = PyMongo(app)
 collection = mongo.db.stories
+user_collection = mongo.db.users
 
-# Initialize Flask-Admin
-admin = init_admin(app, collection)
+# Initialize authentication and admin logic
+auth = init_auth(app, user_collection)
+init_admin(app, collection, auth['admin_required'])
+
+# Use the login_required decorator where needed
+@app.route('/protected')
+@auth['login_required']
+def protected_route():
+    return 'This is a protected route.'
 
 # Define the schema for input validation using Marshmallow
 class PostSchema(Schema):

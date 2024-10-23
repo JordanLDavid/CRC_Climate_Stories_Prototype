@@ -2,8 +2,15 @@ from flask_admin.contrib.pymongo import ModelView
 from flask_admin.model.template import macro
 from markupsafe import Markup
 from .forms import PostForm
+from flask import session, redirect, url_for
 
 class PostView(ModelView):
+    def is_accessible(self):
+        return 'user' in session and session['user'].get('role') == 'admin'
+
+    def inaccessible_callback(self, name, **kwargs):
+        return redirect(url_for('login'))
+
     # List of columns to display
     column_list = ('title', 'content_image_display', 'content_description', 'location', 'tags', 'created_at', 'status')
     
