@@ -1,0 +1,87 @@
+/* src/components/posts/PostList.css */
+/* src/components/posts/PostList.css */
+
+/* Overall container styling */
+.post-list-container {
+  width: 100%;
+  margin: 0 auto;
+  background-color: #242424; /* Grayish background for the container */
+  border-radius: 8px; /* Rounded corners */
+}
+
+/* List styling */
+.post-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px; /* Space between each post */
+}
+
+/* Individual post styling */
+.post-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #242424; /* White background for individual posts */
+  gap: 10px; /* Space between columns */
+}
+
+/* Optional: Add hover effect for individual posts */
+.post-item:hover {
+  background-color: #171717; /* Light gray on hover */
+}
+
+.post-title,
+.post-description,
+.post-tags,
+.post-image,
+.post-longitude,
+.post-latitude,
+.post-delete {
+  flex: 1; /* Make all items flex and take equal space */
+}
+
+.post-image img {
+  max-width: 100px; /* Set a max width for images */
+  height: auto;
+  border-radius: 5px;
+}
+
+.post-delete button {
+  background-color: #ff4d4f;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.post-delete button:hover {
+  background-color: #ff7875;
+}
+
+
+  .post-title {
+    flex: 2; /* Make the title take up more space */
+  }
+  
+  .post-description {
+    flex: 3; /* Make the description take even more space */
+  }
+  
+  .post-tags {
+    flex: 1; /* Keep the tags smaller */
+  }
+  
+  .post-image {
+    flex: 1; /* Keep the image smaller */
+  }
+  
+  .post-longitude,
+  .post-latitude {
+    flex: 1; /* Keep the image smaller */
+  }

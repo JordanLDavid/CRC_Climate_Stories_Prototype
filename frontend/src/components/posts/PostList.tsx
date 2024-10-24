@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { Post } from './types';
 import { fetchPosts, deletePost } from '../../services/postService';
+import './PostList.css'; // Import CSS file
 
 const PostList: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -21,26 +22,31 @@ const PostList: React.FC = () => {
   }, []);
 
   return (
-    <div>
+    <div className="post-list-container">
       <h2>Posts</h2>
       {posts.length > 0 ? (
-        <ul>
+        <div className="post-list">
           {posts.map((post) => (
-            <li key={post._id}>
-              <h3>{post.title}</h3>
-              <p>{post.content.description}</p>
-              {post.content.image && (
-                <img 
-                  src={post.content.image} 
-                  alt={post.title} 
-                  style={{ width: '200px', height: 'auto' }} 
-                />
-              )}
-              <p>{post.tags.join(', ')}</p>
-              <button onClick={() => handleDelete(post._id)}>Delete</button>
-            </li>
+            <div className="post-item" key={post._id}>
+              <div className="post-title">{post.title}</div>
+              <div className="post-description">{post.content.description}</div>
+              <div className="post-image">
+                {post.content.image && (
+                  <img
+                    src={post.content.image}
+                    alt={post.title}
+                  />
+                )}
+              </div>
+              <div className="post-longitude">{post.location.coordinates[0]}</div>
+              <div className="post-latitude">{post.location.coordinates[1]}</div>
+              <div className="post-tags">{post.tags.join(', ')}</div>
+              <div className="post-delete">
+                <button onClick={() => handleDelete(post._id)}>Delete</button>
+              </div>
+            </div>
           ))}
-        </ul>
+        </div>
       ) : (
         <p>No posts available.</p>
       )}
