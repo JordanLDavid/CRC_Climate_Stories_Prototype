@@ -1,0 +1,62 @@
+/* src/components/posts/PostList.css */
+/* src/components/posts/PostList.css */
+
+/* Overall container styling */
+.post-list-container {
+  width: 100%;
+  margin: 0 auto;
+  background-color: #242424; /* Grayish background for the container */
+  border-radius: 8px; /* Rounded corners */
+}
+
+/* List styling */
+.post-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px; /* Space between each post */
+}
+
+.post-list-header {
+  display: grid;
+  grid-template-columns: 2fr 3fr 1fr 1fr 1fr 1fr; /* Match proportions to post items */
+  padding: 10px;
+  font-weight: bold;
+  border-bottom: 1px solid #333;
+}
+
+/* Individual post styling */
+.post-item {
+  display: grid; /* Use grid to align items properly */
+  grid-template-columns: 2fr 3fr 1fr 1fr 1fr 1fr; /* Match header proportions */
+  align-items: center; /* Center items vertically */
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #242424; /* Grayish background for individual posts */
+}
+
+/* Optional: Add hover effect for individual posts */
+.post-item:hover {
+  background-color: #171717; /* Light gray on hover */
+}
+
+
+.post-image img {
+  max-width: 100px; /* Set a max width for images */
+  height: auto;
+  border-radius: 5px;
+}
+
+.post-delete button {
+  background-color: #ff4d4f;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.post-delete button:hover {
+  background-color: #ff7875;
+}
