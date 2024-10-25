@@ -1,7 +1,7 @@
 // src/components/posts/PostList.tsx
 import { useEffect, useState } from 'react';
 import { Post } from './types';
-import { fetchPosts, deletePost } from '../../services/postService';
+import { fetchPosts /*, deletePost */ } from '../../services/postService';
 import './PostList.css';
 
 interface PostListProps {
@@ -16,10 +16,10 @@ const PostList: React.FC<PostListProps> = ({ setTriggerReload }) => {
     setPosts(data);
   };
 
-  const handleDelete = async (id: string) => {
-    await deletePost(id);
-    loadPosts();
-  };
+  //const handleDelete = async (id: string) => {
+    //await deletePost(id);
+    //loadPosts();
+  //};
 
   useEffect(() => {
     // Load posts when component mounts

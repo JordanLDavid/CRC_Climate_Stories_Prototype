@@ -25,14 +25,14 @@ const PostForm: React.FC<PostFormProps> = ({ onSubmit, onClose }) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
 
-    const updateNestedField = (fieldPath: string[], value: any) => {
+    const updateNestedField = (fieldPath: (string | number)[], value: any) => {
       setFormData(prevData => {
         const updatedData = { ...prevData };
-        let currentLevel = updatedData;
+        let currentLevel: any = updatedData;
 
         // Navigate to the correct level in the nested object
         for (let i = 0; i < fieldPath.length - 1; i++) {
-          currentLevel = currentLevel[fieldPath[i]];
+          currentLevel = currentLevel[fieldPath[i]] as any;
         }
         currentLevel[fieldPath[fieldPath.length - 1]] = value;
         return updatedData;
