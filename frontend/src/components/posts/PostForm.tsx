@@ -1,58 +1,82 @@
 // src/components/posts/PostForm.tsx
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { PostFormData } from './types';
-import { createPost, updatePost } from '../../services/postService';
+import './PostForm.css'; // Import the CSS file
 
 interface PostFormProps {
-  initialData?: PostFormData;
-  postId?: string;
-  onSubmitSuccess: () => void;
+  onSubmit: (formData: PostFormData) => void;
+  onClose: () => void;
 }
 
-const PostForm: React.FC<PostFormProps> = ({ initialData, postId, onSubmitSuccess }) => {
-  const [formData, setFormData] = useState<PostFormData>(initialData || {
+const PostForm: React.FC<PostFormProps> = ({ onSubmit, onClose }) => {
+  const [formData, setFormData] = useState<PostFormData>({
     title: '',
-    description: '',
-    image: '',
-    longitude: '',
-    latitude: '',
-    tags: ''
+    content: {
+      description: '',
+      image: '', 
+    },
+    location: {
+      type: 'Point', 
+      coordinates: [0, 0], 
+    },
+    tags: []
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+
+    const updateNestedField = (fieldPath: string[], value: any) => {
+      setFormData(prevData => {
+        const updatedData = { ...prevData };
+        let currentLevel = updatedData;
+
+        // Navigate to the correct level in the nested object
+        for (let i = 0; i < fieldPath.length - 1; i++) {
+          currentLevel = currentLevel[fieldPath[i]];
+        }
+        currentLevel[fieldPath[fieldPath.length - 1]] = value;
+        return updatedData;
+      });
+    };
+
+    switch (name) {
+      case 'description':
+        updateNestedField(['content', 'description'], value);
+        break;
+      case 'image':
+        updateNestedField(['content', 'image'], value);
+        break;
+        case 'longitude':
+          updateNestedField(
+            ['location', 'coordinates', 0],
+            value === '' ? 0 : parseFloat(value) || 0 // Prevent NaN or empty values
+          );
+          break;
+        case 'latitude':
+          updateNestedField(
+            ['location', 'coordinates', 1],
+            value === '' ? 0 : parseFloat(value) || 0 // Prevent NaN or empty values
+          );
+        break;
+      case 'tags':
+        setFormData(prevData => ({
+          ...prevData,
+          tags: value.split(',').map(tag => tag.trim()), // Update tags
+        }));
+        break;
+      default:
+        setFormData(prevData => ({ ...prevData, [name]: value }));
+    }
   };
 
-  // src/components/posts/PostForm.tsx
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-
-  // Create the structure expected by the API
-  const postData = {
-    title: formData.title,  // Maps directly to title
-    content: {
-      description: formData.description,  // From form input
-      image: formData.image  // From form input
-    },
-    location: {
-      type: 'Point',  // Assuming this is always 'Point'
-      coordinates: [parseFloat(formData.longitude), parseFloat(formData.latitude)]  // Converts to number
-    },
-    tags: formData.tags.split(',').map(tag => tag.trim())  // Converts comma-separated string to array
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSubmit(formData);
+    onClose(); // Close the modal after submitting
   };
-
-  if (postId) {
-    await updatePost(postId, postData);  // Update existing post
-  } else {
-    await createPost(postData);  // Create new post
-  }
-
-  onSubmitSuccess();
-};
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form className="post-form" onSubmit={handleSubmit}>
       <input
         type="text"
         name="title"
@@ -64,7 +88,7 @@ const handleSubmit = async (e: React.FormEvent) => {
       <textarea
         name="description"
         placeholder="Description"
-        value={formData.description}
+        value={formData.content.description}
         onChange={handleChange}
         required
       />
@@ -72,15 +96,14 @@ const handleSubmit = async (e: React.FormEvent) => {
         type="text"
         name="image"
         placeholder="Image URL"
-        value={formData.image}
+        value={formData.content.image}
         onChange={handleChange}
-        required
       />
       <input
         type="text"
         name="longitude"
         placeholder="Longitude"
-        value={formData.longitude}
+        value={formData.location.coordinates[0]}
         onChange={handleChange}
         required
       />
@@ -88,19 +111,18 @@ const handleSubmit = async (e: React.FormEvent) => {
         type="text"
         name="latitude"
         placeholder="Latitude"
-        value={formData.latitude}
+        value={formData.location.coordinates[1]}
         onChange={handleChange}
         required
       />
       <input
         type="text"
         name="tags"
-        placeholder="Tags (comma-separated)"
+        placeholder="Tags (comma separated)"
         value={formData.tags}
         onChange={handleChange}
-        required
       />
-      <button type="submit">{postId ? 'Update Post' : 'Create Post'}</button>
+      <button type="submit">Submit</button>
     </form>
   );
 };

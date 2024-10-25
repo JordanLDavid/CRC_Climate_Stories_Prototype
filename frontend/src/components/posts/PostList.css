@@ -16,17 +16,23 @@
   gap: 5px; /* Space between each post */
 }
 
+.post-list-header {
+  display: grid;
+  grid-template-columns: 2fr 3fr 1fr 1fr 1fr 1fr; /* Match proportions to post items */
+  padding: 10px;
+  font-weight: bold;
+  border-bottom: 1px solid #333;
+}
+
 /* Individual post styling */
 .post-item {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
+  display: grid; /* Use grid to align items properly */
+  grid-template-columns: 2fr 3fr 1fr 1fr 1fr 1fr; /* Match header proportions */
+  align-items: center; /* Center items vertically */
   padding: 15px;
   border: 1px solid #ddd;
   border-radius: 8px;
-  background-color: #242424; /* White background for individual posts */
-  gap: 10px; /* Space between columns */
+  background-color: #242424; /* Grayish background for individual posts */
 }
 
 /* Optional: Add hover effect for individual posts */
@@ -34,15 +40,6 @@
   background-color: #171717; /* Light gray on hover */
 }
 
-.post-title,
-.post-description,
-.post-tags,
-.post-image,
-.post-longitude,
-.post-latitude,
-.post-delete {
-  flex: 1; /* Make all items flex and take equal space */
-}
 
 .post-image img {
   max-width: 100px; /* Set a max width for images */
@@ -63,25 +60,3 @@
 .post-delete button:hover {
   background-color: #ff7875;
 }
-
-
-  .post-title {
-    flex: 2; /* Make the title take up more space */
-  }
-  
-  .post-description {
-    flex: 3; /* Make the description take even more space */
-  }
-  
-  .post-tags {
-    flex: 1; /* Keep the tags smaller */
-  }
-  
-  .post-image {
-    flex: 1; /* Keep the image smaller */
-  }
-  
-  .post-longitude,
-  .post-latitude {
-    flex: 1; /* Keep the image smaller */
-  }

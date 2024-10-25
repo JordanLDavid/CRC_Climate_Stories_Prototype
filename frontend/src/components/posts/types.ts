@@ -20,10 +20,14 @@ export interface Location {
   
   export interface PostFormData {
     title: string;
-    description: string;
-    image: string;
-    longitude: string;
-    latitude: string;
-    tags: string;
+    content: {
+      description: string;
+      image: string;
+    };
+    location: {
+      type: string;
+      coordinates: [number, number]; // Ensure this is a tuple of numbers
+    };
+    tags: string[];
   }
   
