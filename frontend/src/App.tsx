@@ -8,7 +8,7 @@ import { createPost } from './services/postService';
 
 const App: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [triggerReload, setTriggerReload] = useState<() => void | null>(null);
+  const [triggerReload, setTriggerReload] = useState<() => void | null>(() => null);
 
   const handlePostSubmit = async (formData: any) => {
     // Call the API to create a new post
