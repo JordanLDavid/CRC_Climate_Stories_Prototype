@@ -1,0 +1,36 @@
+/* src/components/posts/PostForm.css */
+
+.post-form {
+    display: flex;
+    flex-direction: column;
+    background-color: #242424;
+    gap: 10px;
+  }
+  
+  .post-form input,
+  .post-form textarea {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #242424;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .post-form textarea {
+    resize: vertical; /* Allow vertical resizing */
+  }
+  
+  .post-form button {
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .post-form button:hover {
+    background-color: #0056b3;
+  }
+  
