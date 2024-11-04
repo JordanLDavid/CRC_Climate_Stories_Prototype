@@ -12,12 +12,14 @@ interface MapProps {
 const MapClickHandler: React.FC<{ onMapClick: (coordinates: [number, number], event: React.MouseEvent<HTMLDivElement>) => void }> = ({ onMapClick }) => {
   useMapEvents({
     click: (e) => {
+      const roundedLat = parseFloat(e.latlng.lat.toFixed(5));
+      const roundedLng = parseFloat(e.latlng.lng.toFixed(5));
       const syntheticEvent = {
         ...e.originalEvent,
         currentTarget: e.target,
       } as unknown as React.MouseEvent<HTMLDivElement>;
 
-      onMapClick([e.latlng.lng, e.latlng.lat], syntheticEvent);
+      onMapClick([roundedLng, roundedLat], syntheticEvent);
     },
   });
   return null;
