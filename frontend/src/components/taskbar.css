@@ -1,0 +1,15 @@
+.taskbar {
+    display: flex;
+    gap: 15px;
+    padding: 10px;
+    background-color: #333;
+    color: #fff;
+  }
+  .taskbar a {
+    color: #fff;
+    text-decoration: none;
+  }
+  .taskbar a:hover {
+    text-decoration: underline;
+  }
+  

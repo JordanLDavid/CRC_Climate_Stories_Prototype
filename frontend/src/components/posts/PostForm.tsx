@@ -6,21 +6,24 @@ import './PostForm.css'; // Import the CSS file
 interface PostFormProps {
   onSubmit: (formData: PostFormData) => void;
   onClose: () => void;
+  initialCoordinates?: [number, number];
 }
 
-const PostForm: React.FC<PostFormProps> = ({ onSubmit, onClose }) => {
+const PostForm: React.FC<PostFormProps> = ({ onSubmit, onClose, initialCoordinates = [0, 0]}) => {
   const [formData, setFormData] = useState<PostFormData>({
     title: '',
-    content: {
-      description: '',
-      image: '', 
-    },
-    location: {
-      type: 'Point', 
-      coordinates: [0, 0], 
-    },
-    tags: []
+    content: { description: '', image: '' },
+    location: { type: 'Point', coordinates: initialCoordinates },
+    tags: [],
   });
+
+   // Update coordinates if they change
+   React.useEffect(() => {
+    setFormData(prevData => ({
+      ...prevData,
+      location: { ...prevData.location, coordinates: initialCoordinates },
+    }));
+  }, [initialCoordinates]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -76,7 +79,8 @@ const PostForm: React.FC<PostFormProps> = ({ onSubmit, onClose }) => {
   };
 
   return (
-    <form className="post-form" onSubmit={handleSubmit}>
+    <form
+    className="post-form">
       <input
         type="text"
         name="title"
