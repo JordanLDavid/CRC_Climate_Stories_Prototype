@@ -19,11 +19,6 @@ const MapWithForm: React.FC<MapWithFormProps> = ({ posts, onPostSubmit }) => {
     setIsModalOpen(true);
   };
 
-  const handleFormSubmit = () => {
-    // Process form data here
-    setIsModalOpen(false);
-  };
-
   return (  
     <div className="map-container">
       <Map onMapClick={handleMapClick} posts={posts}  />

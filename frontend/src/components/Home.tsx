@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { Post } from "./posts/types";
 import Modal from "./common/Modal";
 import PostForm from "./posts/PostForm";
