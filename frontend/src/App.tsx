@@ -1,28 +1,35 @@
-import { useState } from 'react';
+// App.tsx
+import { useCallback, useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import './App.css';
-import Modal from './components/common/Modal';
-import PostForm from './components/posts/PostForm';
-import PostList from './components/posts/PostList';
 import MapWithForm from './components/MapWithForm';
 import Taskbar from './components/Taskbar';
-import { createPost } from './services/postService';
+import { createPost, fetchPosts } from './services/postService';
+import { Post } from './components/posts/types';
 import 'leaflet/dist/leaflet.css';
-
+import Home from './components/Home';
 
 const App: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [triggerReload, setTriggerReload] = useState<() => void | null>(() => null);
+  const [posts, setPosts] = useState<Post[]>([]);
 
+  const loadPosts = useCallback(async () => {
+    try {
+      const data = await fetchPosts();
+      setPosts(data);
+    } catch (error) {
+      console.error('Error loading posts:', error);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadPosts();
+  }, [loadPosts]);
+    
   const handlePostSubmit = async (formData: any) => {
     try {
-      createPost(formData);
-
-      if (typeof triggerReload === 'function') {
-        triggerReload();
-      } else {
-        console.error('PostList has not mounted or triggerReload is not set');
-      }
+      await createPost(formData);
+      loadPosts(); // Reload posts after a new post is created
     } catch (error) {
       console.error('Error creating post:', error);
     }
@@ -40,23 +47,15 @@ const App: React.FC = () => {
             <Route
               path="/"
               element={
-                <div>
-                <div className="post-actions">
-                  <h2>Posts</h2>
-                  <button className="create-post-button" onClick={() => setIsModalOpen(true)}>
-                    Create New Post
-                  </button>
-                  <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-                    <PostForm onSubmit={handlePostSubmit} onClose={() => setIsModalOpen(false)}/>
-                  </Modal>
-                </div>
-                <PostList setTriggerReload={setTriggerReload} />
-                </div>
+                <Home
+                  posts={posts}
+                  isModalOpen={isModalOpen}
+                  setIsModalOpen={setIsModalOpen}
+                  onPostSubmit={handlePostSubmit}
+                />
               }
             />
-            <Route path="/map" element={
-              <MapWithForm />
-            } />
+            <Route path="/map" element={<MapWithForm posts={posts} onPostSubmit={handlePostSubmit}/>} />
           </Routes>
         </main>
       </div>

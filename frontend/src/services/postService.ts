@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { Post, PostFormData } from '../components/posts/types';
 
-const API_URL = import.meta.env.BACKEND_API_BASE_URL;
+const API_URL = import.meta.env.VITE_POST_API_URL;
 
 export const fetchPosts = async (): Promise<Post[]> => {
   const response = await axios.get(API_URL);

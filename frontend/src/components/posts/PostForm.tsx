@@ -1,7 +1,6 @@
-// src/components/posts/PostForm.tsx
 import React, { useState } from 'react';
 import { PostFormData } from './types';
-import './PostForm.css'; // Import the CSS file
+import './PostForm.css';
 
 interface PostFormProps {
   onSubmit: (formData: PostFormData) => void;
@@ -17,12 +16,18 @@ const PostForm: React.FC<PostFormProps> = ({ onSubmit, onClose, initialCoordinat
     tags: [],
   });
 
-   // Update coordinates if they change
+
    React.useEffect(() => {
-    setFormData(prevData => ({
-      ...prevData,
-      location: { ...prevData.location, coordinates: initialCoordinates },
-    }));
+    // Update coordinates only if they differ from current formData
+    if (
+      formData.location.coordinates[0] !== initialCoordinates[0] ||
+      formData.location.coordinates[1] !== initialCoordinates[1]
+    ) {
+      setFormData(prevData => ({
+        ...prevData,
+        location: { ...prevData.location, coordinates: initialCoordinates },
+      }));
+    }
   }, [initialCoordinates]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -52,19 +57,19 @@ const PostForm: React.FC<PostFormProps> = ({ onSubmit, onClose, initialCoordinat
         case 'longitude':
           updateNestedField(
             ['location', 'coordinates', 0],
-            value === '' ? 0 : parseFloat(value) || 0 // Prevent NaN or empty values
+            value === '' ? 0 : parseFloat(value) || 0
           );
           break;
         case 'latitude':
           updateNestedField(
             ['location', 'coordinates', 1],
-            value === '' ? 0 : parseFloat(value) || 0 // Prevent NaN or empty values
+            value === '' ? 0 : parseFloat(value) || 0
           );
         break;
       case 'tags':
         setFormData(prevData => ({
           ...prevData,
-          tags: value.split(',').map(tag => tag.trim()), // Update tags
+          tags: value.split(',').map(tag => tag.trim()),
         }));
         break;
       default:
@@ -75,12 +80,12 @@ const PostForm: React.FC<PostFormProps> = ({ onSubmit, onClose, initialCoordinat
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit(formData);
-    onClose(); // Close the modal after submitting
+    onClose();
   };
 
   return (
     <form
-    className="post-form">
+    className="post-form" onSubmit={handleSubmit}>
       <input
         type="text"
         name="title"
