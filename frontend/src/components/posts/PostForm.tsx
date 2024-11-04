@@ -11,7 +11,7 @@ interface PostFormProps {
 const PostForm: React.FC<PostFormProps> = ({ onSubmit, onClose, initialCoordinates = [0, 0]}) => {
   const [formData, setFormData] = useState<PostFormData>({
     title: '',
-    content: { description: '', image: '' },
+    content: { description: '' },
     location: { type: 'Point', coordinates: initialCoordinates },
     tags: [],
   });
@@ -100,13 +100,6 @@ const PostForm: React.FC<PostFormProps> = ({ onSubmit, onClose, initialCoordinat
         value={formData.content.description}
         onChange={handleChange}
         required
-      />
-      <input
-        type="text"
-        name="image"
-        placeholder="Image URL"
-        value={formData.content.image}
-        onChange={handleChange}
       />
       <input
         type="text"

@@ -24,11 +24,6 @@ const PostList: React.FC<PostListProps> = ({ posts }) => {
               <div className="post-item" key={post._id}>
                 <div className="post-title">{post.title}</div>
                 <div className="post-description">{post.content.description}</div>
-                <div className="post-image">
-                  {post.content.image && (
-                    <img src={post.content.image} alt={post.title} />
-                  )}
-                </div>
                 <div className="post-longitude">{post.location.coordinates[0]}</div>
                 <div className="post-latitude">{post.location.coordinates[1]}</div>
                 <div className="post-tags">{post.tags.join(', ')}</div>

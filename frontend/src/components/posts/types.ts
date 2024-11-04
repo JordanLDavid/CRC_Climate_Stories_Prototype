@@ -5,7 +5,6 @@ export interface Location {
   
   export interface PostContent {
     description: string;
-    image: string;
   }
   
   export interface Post {
@@ -21,7 +20,6 @@ export interface Location {
     title: string;
     content: {
       description: string;
-      image: string;
     };
     location: {
       type: string;
