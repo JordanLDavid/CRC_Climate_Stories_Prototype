@@ -2,6 +2,7 @@ import React from 'react';
 import { MapContainer, TileLayer, useMapEvents, Marker, Popup } from 'react-leaflet';
 import { LatLngTuple } from 'leaflet';
 import './Map.css';
+import 'leaflet/dist/leaflet.css';
 import { Post } from './posts/types';
 
 interface MapProps {
