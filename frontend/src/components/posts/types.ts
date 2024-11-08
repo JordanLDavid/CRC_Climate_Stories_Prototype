@@ -1,4 +1,3 @@
-// src/components/posts/types.ts
 export interface Location {
     type: 'Point';
     coordinates: [number, number]; // [longitude, latitude]
@@ -6,7 +5,6 @@ export interface Location {
   
   export interface PostContent {
     description: string;
-    image: string;
   }
   
   export interface Post {
@@ -22,11 +20,10 @@ export interface Location {
     title: string;
     content: {
       description: string;
-      image: string;
     };
     location: {
       type: string;
-      coordinates: [number, number]; // Ensure this is a tuple of numbers
+      coordinates: [number, number];
     };
     tags: string[];
   }
