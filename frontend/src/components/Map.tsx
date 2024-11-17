@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { MapContainer, TileLayer, useMapEvents, Marker, Popup } from 'react-leaflet';
-import { LatLngTuple } from 'leaflet';
+import L, { LatLngTuple } from 'leaflet';
 import './Map.css';
 import 'leaflet/dist/leaflet.css';
 import { Post } from './posts/types';
@@ -55,6 +55,32 @@ const Map: React.FC<MapProps> = ({ posts, onMapClick }) => {
     [43.579, -79.639],
     [43.785, -79.123],
   ];
+
+  useEffect(() => {
+    // TypeScript workaround for accessing _getIconUrl
+    const defaultIcon = L.Icon.Default as any;
+
+    // Delete the default method and merge options
+    delete defaultIcon.prototype._getIconUrl;
+    defaultIcon.mergeOptions({
+      iconUrl: '/leaflet-icons/marker-icon.png',    // Marker icon path (normal)
+      iconRetinaUrl: '/leaflet-icons/marker-icon-2x.png', // Retina version of marker icon
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowUrl: '/leaflet-icons/marker-shadow.png', // Shadow path
+      shadowSize: [41, 41],
+    });
+
+    // Update the layers control icon paths
+    L.Icon.Default.mergeOptions({
+      // For layers control (if you're using it)
+      iconUrl: '/leaflet-icons/layers.png',        // Layers icon
+      iconRetinaUrl: '/leaflet-icons/layers-2x.png', // Retina version of layers icon
+      shadowUrl: '/leaflet-icons/marker-shadow.png', // Shadow (same as marker shadow)
+    });
+
+  }, []);
 
   return (
     <MapContainer
