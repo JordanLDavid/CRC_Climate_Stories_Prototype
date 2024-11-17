@@ -53,7 +53,7 @@ class PostSchema(Schema):
     tags = fields.List(fields.Str(), required=True)
     created_at = fields.DateTime()
     status = fields.Str(required=False, default='pending')
-    captcha_token = fields.Str(required=True)
+    captchaToken = fields.Str(required=True)
 
 # Define a schema for tag validation
 class TagSchema(Schema):
