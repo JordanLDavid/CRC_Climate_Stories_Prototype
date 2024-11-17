@@ -26,5 +26,6 @@ export interface Location {
       coordinates: [number, number];
     };
     tags: string[];
+    captchaToken: string;
   }
   

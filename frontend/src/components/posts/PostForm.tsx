@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import HCaptcha from '@hcaptcha/react-hcaptcha';
 import { PostFormData } from './types';
 import './PostForm.css';
 
@@ -8,17 +9,16 @@ interface PostFormProps {
   initialCoordinates?: [number, number];
 }
 
-const PostForm: React.FC<PostFormProps> = ({ onSubmit, onClose, initialCoordinates = [0, 0]}) => {
+const PostForm: React.FC<PostFormProps> = ({ onSubmit, onClose, initialCoordinates = [0, 0] }) => {
   const [formData, setFormData] = useState<PostFormData>({
     title: '',
     content: { description: '' },
     location: { type: 'Point', coordinates: initialCoordinates },
     tags: [],
+    captchaToken: '',
   });
 
-
-   React.useEffect(() => {
-    // Update coordinates only if they differ from current formData
+  React.useEffect(() => {
     if (
       formData.location.coordinates[0] !== initialCoordinates[0] ||
       formData.location.coordinates[1] !== initialCoordinates[1]
@@ -32,13 +32,10 @@ const PostForm: React.FC<PostFormProps> = ({ onSubmit, onClose, initialCoordinat
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-
     const updateNestedField = (fieldPath: (string | number)[], value: any) => {
       setFormData(prevData => {
         const updatedData = { ...prevData };
         let currentLevel: any = updatedData;
-
-        // Navigate to the correct level in the nested object
         for (let i = 0; i < fieldPath.length - 1; i++) {
           currentLevel = currentLevel[fieldPath[i]] as any;
         }
@@ -54,17 +51,11 @@ const PostForm: React.FC<PostFormProps> = ({ onSubmit, onClose, initialCoordinat
       case 'image':
         updateNestedField(['content', 'image'], value);
         break;
-        case 'longitude':
-          updateNestedField(
-            ['location', 'coordinates', 0],
-            value === '' ? 0 : parseFloat(value) || 0
-          );
-          break;
-        case 'latitude':
-          updateNestedField(
-            ['location', 'coordinates', 1],
-            value === '' ? 0 : parseFloat(value) || 0
-          );
+      case 'longitude':
+        updateNestedField(['location', 'coordinates', 0], value === '' ? 0 : parseFloat(value) || 0);
+        break;
+      case 'latitude':
+        updateNestedField(['location', 'coordinates', 1], value === '' ? 0 : parseFloat(value) || 0);
         break;
       case 'tags':
         setFormData(prevData => ({
@@ -79,13 +70,23 @@ const PostForm: React.FC<PostFormProps> = ({ onSubmit, onClose, initialCoordinat
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(formData);
-    onClose();
+    if (formData.captchaToken) {
+      onSubmit(formData);
+      onClose();
+    } else {
+      alert('Please complete the hCaptcha.');
+    }
+  };
+
+  const handleVerificationSuccess = (token: string) => {
+    setFormData(prevData => ({
+      ...prevData,
+      captchaToken: token,
+    }));
   };
 
   return (
-    <form
-    className="post-form" onSubmit={handleSubmit}>
+    <form className="post-form" onSubmit={handleSubmit}>
       <input
         type="text"
         name="title"
@@ -124,6 +125,12 @@ const PostForm: React.FC<PostFormProps> = ({ onSubmit, onClose, initialCoordinat
         value={formData.tags}
         onChange={handleChange}
       />
+
+      <HCaptcha
+        sitekey={import.meta.env.VITE_CAPTCHA_SITE_KEY}
+        onVerify={handleVerificationSuccess}
+      />
+
       <button type="submit">Submit</button>
     </form>
   );

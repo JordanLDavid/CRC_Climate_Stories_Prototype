@@ -1,3 +1,4 @@
+import requests
 import datetime
 from flask import Flask, jsonify, request, session
 from swagger import init_swagger
@@ -18,6 +19,9 @@ init_swagger(app)
 if os.path.exists('.env'):
     from dotenv import load_dotenv
     load_dotenv()
+
+# Your hCaptcha secret key (keep this secure and never expose it on the client side)
+captcha_secret_key = os.getenv('CAPTCHA_SECRET_KEY')
 
 # Now retrieve the MongoDB URI
 mongo_uri = os.getenv('MONGODB_URI')
@@ -49,6 +53,7 @@ class PostSchema(Schema):
     tags = fields.List(fields.Str(), required=True)
     created_at = fields.DateTime()
     status = fields.Str(required=False, default='pending')
+    captcha_token = fields.Str(required=True)
 
 # Define a schema for tag validation
 class TagSchema(Schema):
@@ -82,6 +87,26 @@ def create():
     try:
         # Validate and deserialize the request JSON
         data = post_schema.load(request.json)
+        data = request.json
+        hcaptcha_response = data.get('captchaToken')
+
+        if not hcaptcha_response:
+            return jsonify({'success': False, 'message': 'CAPTCHA token missing'}), 400
+
+        # Verify the hCaptcha token with the hCaptcha verification endpoint
+        verification_response = requests.post(
+            'https://hcaptcha.com/siteverify',
+            data={
+                'secret': captcha_secret_key,
+                'response': hcaptcha_response
+            }
+        )
+
+        verification_result = verification_response.json()
+
+        if not verification_result.get('success'):
+            return jsonify({'success': False, 'message': 'CAPTCHA verification failed'}), 400
+
         data['created_at'] = datetime.datetime.now(datetime.timezone.utc)  # Add created_at timestamp
         data['status'] = 'pending'  # Set initial status to pending
 
@@ -166,6 +191,20 @@ def update_post(id):
         # Validate the post_id to ensure it's a valid ObjectId
         if not ObjectId.is_valid(id):
             return jsonify({'error': 'Invalid post ID'}), 400
+        
+        hcaptcha_response = data.get('captchaToken')
+
+        if not hcaptcha_response:
+            return jsonify({'success': False, 'message': 'CAPTCHA token missing'}), 400
+
+        # Verify the hCaptcha token with the hCaptcha verification endpoint
+        verification_response = requests.post(
+            'https://hcaptcha.com/siteverify',
+            data={
+                'secret': captcha_secret_key,
+                'response': hcaptcha_response
+            }
+        )
 
         # Validate and deserialize the request JSON
         data = post_schema.load(request.json)
