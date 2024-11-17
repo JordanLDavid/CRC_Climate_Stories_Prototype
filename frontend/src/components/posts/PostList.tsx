@@ -14,7 +14,6 @@ const PostList: React.FC<PostListProps> = ({ posts }) => {
           <div className="post-list-header">
             <span>Title</span>
             <span>Description</span>
-            <span>Image</span>
             <span>Longitude</span>
             <span>Latitude</span>
             <span>Tags</span>

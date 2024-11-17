@@ -27,12 +27,23 @@ const MapClickHandler: React.FC<{ onMapClick: (coordinates: [number, number], ev
 };
 
 const PostMarkers: React.FC<{ posts: Post[] }> = ({ posts }) => {
+  const markerIcon = new L.Icon({
+    iconUrl: '/leaflet-icons/marker-icon.png',    // Marker icon
+    iconRetinaUrl: '/leaflet-icons/marker-icon-2x.png', // Retina version of marker icon
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowUrl: '/leaflet-icons/marker-shadow.png', // Marker shadow
+    shadowSize: [41, 41],
+  });
+
   return (
     <>
       {posts.map((post) => (
         <Marker
           key={post._id}
           position={[post.location.coordinates[1], post.location.coordinates[0]]}
+          icon={markerIcon}  // Use the custom icon for the marker
         >
           <Popup>
             <b>{post.title}</b>
@@ -56,30 +67,15 @@ const Map: React.FC<MapProps> = ({ posts, onMapClick }) => {
     [43.785, -79.123],
   ];
 
+  // Prevent modifying the default icon settings globally
   useEffect(() => {
-    // TypeScript workaround for accessing _getIconUrl
-    const defaultIcon = L.Icon.Default as any;
-
-    // Delete the default method and merge options
-    delete defaultIcon.prototype._getIconUrl;
-    defaultIcon.mergeOptions({
-      iconUrl: '/leaflet-icons/marker-icon.png',    // Marker icon path (normal)
-      iconRetinaUrl: '/leaflet-icons/marker-icon-2x.png', // Retina version of marker icon
-      iconSize: [25, 41],
-      iconAnchor: [12, 41],
-      popupAnchor: [1, -34],
-      shadowUrl: '/leaflet-icons/marker-shadow.png', // Shadow path
-      shadowSize: [41, 41],
-    });
-
-    // Update the layers control icon paths
+    // No need to modify default icon globally since we're using a custom icon for markers
+    // Ensure the layers control icons (if used) are correctly set
     L.Icon.Default.mergeOptions({
-      // For layers control (if you're using it)
-      iconUrl: '/leaflet-icons/layers.png',        // Layers icon
+      iconUrl: '/leaflet-icons/layers.png', // Layers icon for controls
       iconRetinaUrl: '/leaflet-icons/layers-2x.png', // Retina version of layers icon
-      shadowUrl: '/leaflet-icons/marker-shadow.png', // Shadow (same as marker shadow)
+      shadowUrl: '/leaflet-icons/marker-shadow.png', // Shadow for layers control
     });
-
   }, []);
 
   return (
