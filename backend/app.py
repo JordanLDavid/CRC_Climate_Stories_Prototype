@@ -191,6 +191,20 @@ def update_post(id):
         # Validate the post_id to ensure it's a valid ObjectId
         if not ObjectId.is_valid(id):
             return jsonify({'error': 'Invalid post ID'}), 400
+        
+        hcaptcha_response = data.get('captchaToken')
+
+        if not hcaptcha_response:
+            return jsonify({'success': False, 'message': 'CAPTCHA token missing'}), 400
+
+        # Verify the hCaptcha token with the hCaptcha verification endpoint
+        verification_response = requests.post(
+            'https://hcaptcha.com/siteverify',
+            data={
+                'secret': captcha_secret_key,
+                'response': hcaptcha_response
+            }
+        )
 
         # Validate and deserialize the request JSON
         data = post_schema.load(request.json)
