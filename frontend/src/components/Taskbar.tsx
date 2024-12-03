@@ -6,8 +6,8 @@ const Taskbar: React.FC = () => {
 
   return (
     <nav className="taskbar">
-      <Link to="/">Posts</Link>
-      <Link to="/map">Maps</Link>
+      <Link to="/">Maps</Link>
+      <Link to="/posts">Stories</Link>
     </nav>
   );
 };

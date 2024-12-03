@@ -52,7 +52,7 @@ const PostMarkers: React.FC<{ posts: Post[] }> = ({ posts }) => {
             <br />
             <small>{new Date(post.created_at).toLocaleDateString()}</small>
             <br />
-            {post.tags.map(tag => `#${tag}`).join(' ')}
+            {post.tags.length > 0 ? post.tags.map(tag => `#${tag}`).join(' ') : null}
           </Popup>
         </Marker>
       ))}

@@ -44,18 +44,18 @@ const App: React.FC = () => {
         </header>
         <main className="app-main">
           <Routes>
+            <Route path="/" element={<MapWithForm posts={posts} onPostSubmit={handlePostSubmit}/>} />
             <Route
-              path="/"
-              element={
-                <Home
-                  posts={posts}
-                  isModalOpen={isModalOpen}
-                  setIsModalOpen={setIsModalOpen}
-                  onPostSubmit={handlePostSubmit}
-                />
-              }
-            />
-            <Route path="/map" element={<MapWithForm posts={posts} onPostSubmit={handlePostSubmit}/>} />
+                path="/posts"
+                element={
+                  <Home
+                    posts={posts}
+                    isModalOpen={isModalOpen}
+                    setIsModalOpen={setIsModalOpen}
+                    onPostSubmit={handlePostSubmit}
+                  />
+                }
+              />
           </Routes>
         </main>
       </div>
