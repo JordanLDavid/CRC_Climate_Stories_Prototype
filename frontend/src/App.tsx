@@ -6,7 +6,6 @@ import MapWithForm from './components/MapWithForm';
 import Taskbar from './components/Taskbar';
 import { createPost, fetchPosts } from './services/postService';
 import { Post } from './components/posts/types';
-import 'leaflet/dist/leaflet.css';
 import Home from './components/Home';
 
 const App: React.FC = () => {

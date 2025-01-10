@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Map from './Map';
+import MapComponent from './Map';
 import PostForm from './posts/PostForm';
 import './MapWithForm.css';
 import Modal from './common/Modal';
@@ -21,7 +21,7 @@ const MapWithForm: React.FC<MapWithFormProps> = ({ posts, onPostSubmit }) => {
 
   return (  
     <div className="map-container">
-      <Map onMapClick={handleMapClick} posts={posts}  />
+      <MapComponent onMapClick={handleMapClick} posts={posts}  />
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
           <PostForm onSubmit={onPostSubmit} onClose={() => setIsModalOpen(false)} initialCoordinates={coordinates}/>
       </Modal>
