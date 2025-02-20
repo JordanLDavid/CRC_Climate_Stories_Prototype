@@ -1,5 +1,8 @@
 .map-container {
-    flex:1;
-    display:flex;
-  }
-  
+  flex: 1;
+  display: flex;
+  position: relative;
+  min-height: 0;
+  width: 100%;
+  padding-top: 56px;
+}

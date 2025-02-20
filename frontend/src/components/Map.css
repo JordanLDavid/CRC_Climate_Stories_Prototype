@@ -1,6 +1,6 @@
 /* src/components/Map.css */
 .map-container {
-    height: 80vh;
-    width: 80vw;
+    height: calc(100vh - 56px);
+    width: 100%;
   }
   

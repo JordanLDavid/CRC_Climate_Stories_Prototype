@@ -38,14 +38,11 @@ const App: React.FC = () => {
   return (
     <Router>
       <div className="app-container">
-        <header className="app-header">
-          <h1>Post Manager</h1>
           <Taskbar />
-        </header>
         <main className="app-main">
           <Routes>
             <Route
-              path="/"
+              path="/posts"
               element={
                 <Home
                   posts={posts}
@@ -55,7 +52,7 @@ const App: React.FC = () => {
                 />
               }
             />
-            <Route path="/map" element={<MapWithForm posts={posts} onPostSubmit={handlePostSubmit}/>} />
+            <Route path="/" element={<MapWithForm posts={posts} onPostSubmit={handlePostSubmit}/>} />
           </Routes>
         </main>
       </div>
