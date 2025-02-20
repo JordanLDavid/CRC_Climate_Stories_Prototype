@@ -1,6 +1,10 @@
 /* src/components/Map.css */
 .map-container {
-    height: 80vh;
-    width: 80vw;
-  }
-  
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: rgb(176, 224, 230);
+}
