@@ -1,18 +1,13 @@
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
-import { point } from '@turf/helpers';
+import { point, Feature, MultiPolygon, Polygon } from '@turf/helpers';
 
-export function isPointInPolygon(coordinates: [number, number], layer: L.GeoJSON): boolean {
+export function isPointInPolygon(coordinates: [number, number], geoJSON: any): boolean {
     try {
         const pt = point(coordinates);
-        return layer.getLayers().some(l => {
-            if (l instanceof L.Polygon) {
-                const geoJson = l.toGeoJSON();
-                return booleanPointInPolygon(pt, geoJson.geometry);
-            }
-            return false;
-        });
+        const polygons = geoJSON.features[0].geometry;
+        return booleanPointInPolygon(pt, polygons as Feature<Polygon | MultiPolygon>);
     } catch (error) {
-        console.error('Error in point-in-polygon check:', error);
+        console.error('Error checking if point is in polygon:', error);
         return false;
     }
 }

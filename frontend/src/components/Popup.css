@@ -1,0 +1,154 @@
+/* Override dark theme */
+:root {
+  --popup-text: black;
+  --popup-bg: white;
+}
+
+.leaflet-popup,
+.leaflet-popup-content-wrapper,
+.leaflet-popup-content,
+.custom-popup {
+  color: var(--popup-text) !important;
+  background-color: var(--popup-bg) !important;
+}
+:root [class*="leaflet-popup"],
+:root [class*="leaflet-popup"] * {
+    color-scheme: light !important;
+    background-color: white;
+    color: #000000 !important;
+    --text-color: #000000 !important;
+    --text-primary: #000000 !important;
+    --text-secondary: #000000 !important;
+    -webkit-text-fill-color: #000000 !important;
+}
+
+.leaflet-popup-pane,
+.leaflet-popup-pane * {
+    color: #000000 !important;
+    -webkit-text-fill-color: #000000 !important;
+}
+
+/* Direct element styling */
+.leaflet-popup * {
+    color: black !important;
+    -webkit-text-fill-color: black !important;
+}
+
+.leaflet-popup-content-wrapper {
+    background: white !important;
+    color: black !important;
+    -webkit-text-fill-color: black !important;
+}
+
+.leaflet-popup-content {
+    color: black !important;
+    -webkit-text-fill-color: black !important;
+}
+
+.custom-popup * {
+    color: black !important;
+    -webkit-text-fill-color: black !important;
+}
+
+/* Disable dark mode for popup */
+:root {
+    &.leaflet-popup,
+    & .leaflet-popup,
+    & .leaflet-popup-content-wrapper,
+    & .leaflet-popup-content,
+    & .custom-popup {
+        color-scheme: light !important;
+        color: black !important;
+        --text-color: black !important;
+        background-color: white !important;
+    }
+}
+
+/* Force light theme and black text for popups */
+.leaflet-popup-content-wrapper,
+.leaflet-popup-content {
+    background-color: white !important;
+    color-scheme: light !important;
+}
+
+/* Reset all text colors inside popup */
+.leaflet-popup h1,
+.leaflet-popup h2,
+.leaflet-popup h3,
+.leaflet-popup h4,
+.leaflet-popup h5,
+.leaflet-popup h6,
+.leaflet-popup p,
+.leaflet-popup span,
+.leaflet-popup div,
+.leaflet-popup small {
+    color: black !important;
+    -webkit-text-fill-color: black !important;
+}
+
+/* Reset theme variables */
+.leaflet-popup {
+    color-scheme: light !important;
+}
+
+.leaflet-popup,
+.leaflet-popup *,
+.leaflet-popup-content-wrapper,
+.leaflet-popup-content,
+.custom-popup,
+.custom-popup * {
+    color: black !important;
+    --text-color: black !important;
+    --text-primary: black !important;
+    --text-secondary: black !important;
+}
+
+/* Base popup overrides */
+.leaflet-popup-content-wrapper {
+    background-color: white !important;
+    color-scheme: light !important;
+}
+
+.leaflet-popup-tip {
+    background-color: white !important;
+}
+
+/* Content wrapper styles */
+.leaflet-popup-content {
+    color: black !important;
+    margin: 8px !important;
+}
+
+/* Specific popup styles */
+.leaflet-popup .custom-popup {
+    background-color: white !important;
+    color: black !important;
+}
+
+.leaflet-popup .popup-title {
+    color: black !important;
+    font-weight: bold !important;
+    margin-bottom: 8px !important;
+    -webkit-text-fill-color: black !important;
+    text-fill-color: black !important;
+}
+
+.leaflet-popup .popup-description {
+    color: black !important;
+    margin-bottom: 8px !important;
+}
+
+.leaflet-popup .popup-date {
+    color: black !important;
+    display: block !important;
+    margin-bottom: 8px !important;
+}
+
+.leaflet-popup .popup-tags {
+    color: black !important;
+}
+
+.leaflet-popup .popup-tag {
+    color: black !important;
+    margin-right: 4px !important;
+}
