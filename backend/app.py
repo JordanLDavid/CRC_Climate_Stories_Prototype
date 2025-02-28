@@ -1,6 +1,6 @@
 import requests
 import datetime
-from flask import Flask, jsonify, request, session
+from flask import Flask, jsonify, request, session, send_from_directory
 from swagger import init_swagger
 from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
@@ -11,7 +11,7 @@ import os
 from admin.auth import init_auth
 from admin import init_admin
 
-app = Flask(__name__, template_folder="templates")
+app = Flask(__name__, template_folder="templates", static_folder="static", static_url_path="")
 CORS(app)
 init_swagger(app)
 
@@ -38,6 +38,21 @@ user_collection = mongo.db.users
 # Initialize authentication and admin logic
 auth = init_auth(app, user_collection)
 init_admin(app, collection, auth['admin_required'])
+
+# Serve the React app - this will serve the index.html for any path not caught by other routes
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def serve(path):
+    # Don't interfere with API routes - they should be handled by their respective handlers
+    if path.startswith('api/'):
+        # Let Flask continue to other routes
+        return "Not found", 404
+    # Serve static files if they exist
+    elif os.path.exists(os.path.join(app.static_folder, path)):
+        return send_from_directory(app.static_folder, path)
+    # For all other routes, serve the React app's index.html
+    else:
+        return send_from_directory(app.static_folder, 'index.html')
 
 # Use the login_required decorator where needed
 @app.route('/protected')
