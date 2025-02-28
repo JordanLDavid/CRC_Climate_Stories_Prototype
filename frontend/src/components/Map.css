@@ -1,10 +1,26 @@
-/* src/components/Map.css */
 .map-container {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  width: 100%;
-  background-color: rgb(176, 224, 230);
+}
+
+.mapboxgl-popup-content {
+  padding: 10px;
+  border-radius: 4px;
+  max-width: 300px;
+}
+
+.mapboxgl-popup-close-button {
+  font-size: 16px;
+  padding: 5px;
+}
+
+.marker {
+  background-image: url('/marker-icon.png');
+  background-size: cover;
+  width: 25px;
+  height: 41px;
+  cursor: pointer;
 }

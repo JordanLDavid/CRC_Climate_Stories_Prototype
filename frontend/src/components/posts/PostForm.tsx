@@ -9,7 +9,18 @@ interface PostFormProps {
   initialCoordinates?: [number, number];
 }
 
+const CAPTCHA_SITE_KEY = import.meta.env.VITE_CAPTCHA_SITE_KEY || "10000000-ffff-ffff-ffff-000000000001";
+
 const PostForm: React.FC<PostFormProps> = ({ onSubmit, onClose, initialCoordinates = [0, 0] }) => {
+  const captchaRef = React.useRef<HCaptcha>(null);
+  const [isActive, setIsActive] = useState(true);
+  
+  React.useEffect(() => {
+    return () => {
+      setIsActive(false);
+    };
+  }, []);
+
   const [formData, setFormData] = useState<PostFormData>({
     title: '',
     content: { description: '' },
@@ -29,6 +40,17 @@ const PostForm: React.FC<PostFormProps> = ({ onSubmit, onClose, initialCoordinat
       }));
     }
   }, [initialCoordinates]);
+
+  const handleModalClose = React.useCallback(() => {
+    setIsActive(false);
+    setFormData(prevData => ({
+      ...prevData,
+      captchaToken: '',
+    }));
+    onClose();
+  }, [onClose]);
+
+  
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -72,18 +94,19 @@ const PostForm: React.FC<PostFormProps> = ({ onSubmit, onClose, initialCoordinat
     e.preventDefault();
     if (formData.captchaToken) {
       onSubmit(formData);
-      onClose();
     } else {
       alert('Please complete the hCaptcha.');
     }
   };
 
-  const handleVerificationSuccess = (token: string) => {
+  
+
+  const handleVerificationSuccess = React.useCallback((token: string) => {
     setFormData(prevData => ({
       ...prevData,
       captchaToken: token,
     }));
-  };
+  }, []);
 
   return (
     <form className="post-form" onSubmit={handleSubmit}>
@@ -126,12 +149,18 @@ const PostForm: React.FC<PostFormProps> = ({ onSubmit, onClose, initialCoordinat
         onChange={handleChange}
       />
 
-      <HCaptcha
-        sitekey={import.meta.env.VITE_CAPTCHA_SITE_KEY}
-        onVerify={handleVerificationSuccess}
-      />
+      {isActive && (
+        <HCaptcha
+          ref={captchaRef}
+          sitekey={CAPTCHA_SITE_KEY}
+          onVerify={handleVerificationSuccess}
+          onError={(err) => console.warn('hCaptcha Error:', err)}
+          onClose={() => setIsActive(false)}
+        />
+      )}
 
       <button type="submit">Submit</button>
+      <button type="button" onClick={handleModalClose}>Cancel</button>
     </form>
   );
 };

@@ -1,94 +1,27 @@
 import React, { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, useMapEvents, Marker, Popup, GeoJSON } from 'react-leaflet';
-import LocationHandler from './LocationHandler';
-import L, { LatLngTuple } from 'leaflet';
-import 'leaflet/dist/leaflet.css';
+import Map, { Marker, Popup, NavigationControl, Source, Layer } from 'react-map-gl';
+import 'mapbox-gl/dist/mapbox-gl.css';
 import './Map.css';
+import './Popup.css';
 import { Post } from './posts/types';
 import { isPointInPolygon } from '../utils/map-utils';
+
+// Replace this with your actual Mapbox access token
+const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
 
 interface MapProps {
   posts: Post[];
   onMapClick: (coordinates: [number, number], event: React.MouseEvent<HTMLDivElement>) => void;
 }
 
-const MapClickHandler: React.FC<{ onMapClick: (coordinates: [number, number], event: React.MouseEvent<HTMLDivElement>) => void, canadaGeoJSON: any }> = ({ onMapClick, canadaGeoJSON }) => {
-  const [canadaLayer, setCanadaLayer] = useState<L.GeoJSON | null>(null);
-
-  useEffect(() => {
-    if (canadaGeoJSON) {
-      // Only create the GeoJSON layer if canadaGeoJSON is valid
-      const layer = new L.GeoJSON(canadaGeoJSON);
-      setCanadaLayer(layer);
-    }
-  }, [canadaGeoJSON]);
-
-  useMapEvents({
-    click: (e) => {
-      if (canadaLayer) {
-        // Check if the clicked point is inside the Canada boundary
-        const isInsideCanada = isPointInPolygon([e.latlng.lng, e.latlng.lat], canadaLayer);
-        
-
-        if (isInsideCanada) {
-          const roundedLat = parseFloat(e.latlng.lat.toFixed(5));
-          const roundedLng = parseFloat(e.latlng.lng.toFixed(5));
-          const syntheticEvent = {
-            ...e.originalEvent,
-            currentTarget: e.target,
-          } as unknown as React.MouseEvent<HTMLDivElement>;
-
-          console.log(`Point is inside Canada: [${roundedLng}, ${roundedLat}]`);
-          onMapClick([roundedLng, roundedLat], syntheticEvent);
-        } else {
-          console.log("Point is outside Canada");
-          alert("You can only click within Canada!");
-        }
-      }
-    },
-  });
-
-  return null;
-};
-
-const PostMarkers: React.FC<{ posts: Post[] }> = ({ posts }) => {
-  const markerIcon = new L.Icon({
-    iconUrl: '/leaflet-icons/marker-icon.png',
-    iconRetinaUrl: '/leaflet-icons/marker-icon-2x.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowUrl: '/leaflet-icons/marker-shadow.png',
-    shadowSize: [41, 41],
-  });
-
-  return (
-    <>
-      {posts.map((post) => (
-        <Marker
-          key={post._id}
-          position={[post.location.coordinates[1], post.location.coordinates[0]]}
-          icon={markerIcon}
-        >
-          <Popup>
-            <b>{post.title}</b>
-            <br />
-            {post.content.description}
-            <br />
-            <small>{new Date(post.created_at).toLocaleDateString()}</small>
-            <br />
-            {post.tags.map(tag => `#${tag}`).join(' ')}
-          </Popup>
-        </Marker>
-      ))}
-    </>
-  );
-};
-
-const Map: React.FC<MapProps> = ({ posts, onMapClick }) => {
-  const center: LatLngTuple = [45.4215, -75.6972]; // Default center (will be updated by LocationHandler)
-  const zoomLevel = 4; // Zoomed out to show all of Canada
+const CustomMap: React.FC<MapProps> = ({ posts, onMapClick }) => {
   const [canadaGeoJSON, setCanadaGeoJSON] = useState<any | null>(null);
+  const [viewState, setViewState] = useState({
+    longitude: -75.6972,
+    latitude: 45.4215,
+    zoom: 4
+  });
+  const [popupInfo, setPopupInfo] = useState<Post | null>(null);
 
   useEffect(() => {
     fetch('/canada.geojson')
@@ -97,29 +30,153 @@ const Map: React.FC<MapProps> = ({ posts, onMapClick }) => {
       .catch((err) => console.error('Failed to load GeoJSON', err));
   }, []);
 
+  const handleClick = (event: any) => {
+    const coordinates: [number, number] = [event.lngLat.lng, event.lngLat.lat];
+    
+    if (canadaGeoJSON) {
+      const isInsideCanada = isPointInPolygon(coordinates, canadaGeoJSON);
+      
+      if (isInsideCanada) {
+        const roundedLng = parseFloat(coordinates[0].toFixed(5));
+        const roundedLat = parseFloat(coordinates[1].toFixed(5));
+        onMapClick([roundedLng, roundedLat], event.originalEvent);
+      } else {
+        alert("You can only click within Canada!");
+      }
+    }
+  };
+
   return (
-    <MapContainer
-      center={center}
-      zoom={zoomLevel}
-      className="map-container"
-      scrollWheelZoom={true}
-      minZoom={4}
-      maxBounds={[[41.676556, -141.002197], [83.110626, -52.620281]]}
-      maxBoundsViscosity={1.0}
-    >
-      <TileLayer
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        attribution="&copy; OpenStreetMap contributors"
-      />
-      
-      {/* Only render GeoJSON when it's loaded */}
-      {canadaGeoJSON && <GeoJSON data={canadaGeoJSON} style={{ color: 'transparent', fillOpacity: 0 }} />}
-      
-      <MapClickHandler onMapClick={onMapClick} canadaGeoJSON={canadaGeoJSON} />
-      <PostMarkers posts={posts} />
-      <LocationHandler />
-    </MapContainer>
+    <div className="map-container">
+      <Map
+        {...viewState}
+        onMove={evt => setViewState(evt.viewState)}
+        style={{ width: '100%', height: '100%' }}
+        mapStyle="mapbox://styles/mapbox/streets-v12"
+        mapboxAccessToken={MAPBOX_TOKEN}
+        onClick={handleClick}
+        minZoom={4}
+        maxZoom={20}
+        maxBounds={[
+          [-141.002197, 41.676556], // Southwest coordinates
+          [-52.620281, 83.110626]   // Northeast coordinates
+        ]}
+      >
+        <NavigationControl />
+        
+        { false && (<div>
+        {canadaGeoJSON && (
+          <>
+            {/* Grey background for world */}
+            <Source id="world-grey" type="geojson" data={{
+              type: 'FeatureCollection',
+              features: [
+                {
+                  properties: {},
+                  type: 'Feature',
+                  geometry: {
+                    type: 'Polygon',
+                    coordinates: [[
+                      [-180, 90],
+                      [180, 90],
+                      [180, -90],
+                      [-180, -90],
+                      [-180, 90]
+                    ]]
+                  }
+                }
+              ]
+            }}>
+              <Layer
+                id="world-grey-background"
+                type="fill"
+                paint={{
+                  'fill-color': '#808080',
+                  'fill-opacity': 1
+                }}
+              />
+            </Source>
+
+            {/* Mask to cut out Canada from the grey background */}
+            <Source id="canada-mask-source" type="geojson" data={{
+              type: 'FeatureCollection',
+              features: [
+                {
+                  properties: {},
+                  type: 'Feature',
+                  geometry: {
+                    type: 'Polygon',
+                    coordinates: [
+                      [
+                        [-180, 90],
+                        [180, 90],
+                        [180, -90],
+                        [-180, -90],
+                        [-180, 90]
+                      ],
+                      ...canadaGeoJSON.features.map((feature: any) => feature.geometry.coordinates).flat()
+                    ]
+                  }
+                }
+              ]
+            }}>
+              <Layer
+                id="canada-mask"
+                type="fill"
+                paint={{
+                  'fill-color': '#ffffff',
+                  'fill-opacity': 0
+                }}
+                beforeId="world-grey-background"
+              />
+            </Source>
+
+            {/* Canada border */}
+            <Source id="canada-source" type="geojson" data={canadaGeoJSON}>
+              <Layer
+                id="canada-border"
+                type="line"
+                paint={{
+                  'line-color': '#000000',
+                  'line-width': 2
+                }}
+              />
+            </Source>
+          </>
+        )}</div>)}
+
+        {posts.map((post) => (
+          <Marker
+            key={post._id}
+            longitude={post.location.coordinates[0]}
+            latitude={post.location.coordinates[1]}
+            anchor="bottom"
+            onClick={e => {
+              e.originalEvent.stopPropagation();
+              setPopupInfo(post);
+            }}
+          />
+        ))}
+
+        {popupInfo && (
+          <Popup
+            longitude={popupInfo.location.coordinates[0]}
+            latitude={popupInfo.location.coordinates[1]}
+            anchor="bottom"
+            onClose={() => setPopupInfo(null)}
+          >
+            <b>{popupInfo.title}</b>
+            <br />
+            {popupInfo.content.description}
+            <br />
+            <small>{new Date(popupInfo.created_at).toLocaleDateString()}</small>
+            <br />
+            {popupInfo.tags.map(tag => `#${tag}`).join(' ')}
+          </Popup>
+        )}
+      </Map>
+    </div>
   );
 };
 
-export default Map;
+export default CustomMap;

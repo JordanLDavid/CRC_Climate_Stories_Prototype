@@ -19,11 +19,20 @@ const MapWithForm: React.FC<MapWithFormProps> = ({ posts, onPostSubmit }) => {
     setIsModalOpen(true);
   };
 
+  const handleClose = React.useCallback(() => {
+    setIsModalOpen(false);
+  }, []);
+
+  const handleSubmit = React.useCallback((formData: any) => {
+    onPostSubmit(formData);
+    setIsModalOpen(false);
+  }, [onPostSubmit]);
+
   return (  
     <div className="map-container">
       <Map onMapClick={handleMapClick} posts={posts}  />
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-          <PostForm onSubmit={onPostSubmit} onClose={() => setIsModalOpen(false)} initialCoordinates={coordinates}/>
+      <Modal isOpen={isModalOpen} onClose={handleClose}>
+          <PostForm onSubmit={handleSubmit} onClose={handleClose} initialCoordinates={coordinates}/>
       </Modal>
     </div>
   );
