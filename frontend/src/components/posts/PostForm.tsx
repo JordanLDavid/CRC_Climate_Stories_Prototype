@@ -110,6 +110,7 @@ const PostForm: React.FC<PostFormProps> = ({ onSubmit, onClose, initialCoordinat
 
   return (
     <form className="post-form" onSubmit={handleSubmit}>
+      <h2 className="post-form-title">Share Your Climate Story</h2>
       <input
         type="text"
         name="title"
@@ -159,8 +160,10 @@ const PostForm: React.FC<PostFormProps> = ({ onSubmit, onClose, initialCoordinat
         />
       )}
 
-      <button type="submit">Submit</button>
-      <button type="button" onClick={handleModalClose}>Cancel</button>
+      <div className="form-buttons">
+        <button type="submit">Submit</button>
+        <button type="button" onClick={handleModalClose}>Cancel</button>
+      </div>
     </form>
   );
 };

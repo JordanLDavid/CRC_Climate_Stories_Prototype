@@ -1,7 +1,17 @@
 import { Link } from 'react-router-dom';
 import './Taskbar.css';
 
-const Taskbar: React.FC = () => {
+interface TaskbarProps {
+  onAboutClick?: () => void;
+  onContactClick?: () => void;
+  onFaqClick?: () => void;
+}
+
+const Taskbar: React.FC<TaskbarProps> = ({ 
+  onAboutClick, 
+  onContactClick, 
+  onFaqClick 
+}) => {
   return (
     <nav className="taskbar">
       <div className="taskbar-content">
@@ -9,6 +19,9 @@ const Taskbar: React.FC = () => {
         <div className="taskbar-buttons">
           <Link to="/posts" className="taskbar-button">Posts</Link>
           <Link to="/" className="taskbar-button">Map</Link>
+          <button className="taskbar-button" onClick={onAboutClick}>About Us</button>
+          <button className="taskbar-button" onClick={onContactClick}>Contact</button>
+          <button className="taskbar-button" onClick={onFaqClick}>FAQs</button>
         </div>
       </div>
     </nav>

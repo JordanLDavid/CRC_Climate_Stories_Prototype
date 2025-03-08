@@ -1,0 +1,37 @@
+/* WelcomePopup.css */
+.welcome-popup {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  max-width: 600px;
+  width: 100%;
+}
+
+.welcome-popup h2 {
+  color: #569BC4;
+  margin-top: 0;
+  border-bottom: 2px solid #569BC4;
+  padding-bottom: 10px;
+}
+
+.welcome-popup p {
+  margin-bottom: 15px;
+  line-height: 1.5;
+}
+
+.welcome-btn {
+  background: #569BC4;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 10px;
+  transition: background-color 0.3s;
+}
+
+.welcome-btn:hover {
+  background: #4a8ab0;
+}
