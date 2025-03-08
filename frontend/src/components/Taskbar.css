@@ -1,5 +1,5 @@
 .taskbar {
-  background: rgb(176, 224, 230);
+  background: #569BC4;
   position: fixed;
   top: 0;
   left: 0;
@@ -35,6 +35,12 @@
   text-overflow: ellipsis;
 }
 
+/* Override the global hover effect for taskbar links */
+.taskbar-title:hover {
+  color: white; /* Maintain white color on hover */
+  background-color: rgba(255, 255, 255, 0.1); /* Optional: Add a subtle background effect instead */
+}
+
 .taskbar-buttons {
   display: flex;
   gap: 15px;
@@ -47,6 +53,24 @@
   padding: 5px 10px;
   border-radius: 4px;
   transition: background-color 0.2s;
+}
+
+/* Override the global hover effect for taskbar links */
+.taskbar-button:hover {
+  color: white; /* Maintain white color on hover */
+  background-color: rgba(255, 255, 255, 0.1); /* Optional: Add a subtle background effect instead */
+}
+
+/* Additional styling for buttons to match Links */
+button.taskbar-button {
+  background: none;
+  border: none;
+  font-size: inherit;
+  font-family: inherit;
+  cursor: pointer;
+  margin: 0;
+  outline: none;
+  text-align: center;
 }
 
 .taskbar-button:hover {
