@@ -28,13 +28,22 @@ const InformationPopup: React.FC<InformationPopupProps> = ({
           <div className="popup-content-section">
             <h2>About Us</h2>
             <p>
-              Climate Stories is a platform dedicated to sharing personal experiences 
-              related to climate change from around the world. Our mission is to raise 
-              awareness about climate change impacts through first-hand accounts.
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam imperdiet dapibus urna. 
+            Curabitur ullamcorper magna eu mi venenatis, sit amet tincidunt purus dapibus. 
+            Maecenas viverra rutrum turpis, vitae lacinia orci. Sed elementum, metus eleifend 
+            rutrum efficitur, dui velit aliquam risus, et pellentesque ligula nulla quis velit. 
+            Morbi in nisi ut tortor varius varius ac feugiat nibh. Nulla ante velit, egestas 
+            vitae efficitur ut, congue id quam. Nam quis diam eu neque faucibus volutpat. Integer 
+            consectetur ligula sed tellus accumsan, in sagittis justo vestibulum. Curabitur 
+            vulputate purus id volutpat tempor. Sed tellus erat, cursus ac arcu quis, imperdiet 
+            cursus est.
             </p>
             <p>
-              Founded in 2023, we aim to connect people through their stories and 
-              foster a community that understands the real-world impacts of climate change.
+            Etiam finibus leo vel neque mollis efficitur. Vestibulum ac odio et nulla efficitur 
+            suscipit. Sed gravida gravida sollicitudin. Aliquam mollis diam in dui hendrerit, 
+            quis tristique urna maximus. Curabitur vestibulum nunc tortor, et gravida neque 
+            vulputate vitae. Sed condimentum vulputate elit, non fermentum dui commodo at. Proin 
+            maximus commodo magna a laoreet.
             </p>
           </div>
         );
@@ -44,9 +53,9 @@ const InformationPopup: React.FC<InformationPopupProps> = ({
             <h2>Contact Information</h2>
             <p>Have questions or feedback? Reach out to us!</p>
             <ul className="contact-list">
-              <li><strong>Email:</strong> contact@climatestories.org</li>
+              <li><strong>Email:</strong> test@email.com</li>
               <li><strong>Phone:</strong> (555) 123-4567</li>
-              <li><strong>Address:</strong> 123 Climate Lane, Earth City, 98765</li>
+              <li><strong>Address:</strong> Toronto</li>
             </ul>
             <p>We typically respond within 2 business days.</p>
           </div>
@@ -57,15 +66,15 @@ const InformationPopup: React.FC<InformationPopupProps> = ({
             <h2>Frequently Asked Questions</h2>
             <div className="faq-item">
               <h3>How do I share my own climate story?</h3>
-              <p>Click on the "Add Story" button on the map and fill out the form with your experience.</p>
+              <p>Click a location in the map and fill out the form with your experience.</p>
             </div>
             <div className="faq-item">
               <h3>Are the stories verified?</h3>
               <p>We do basic moderation, but stories represent personal experiences and perspectives.</p>
             </div>
             <div className="faq-item">
-              <h3>Can I update my story after posting?</h3>
-              <p>Yes, you can edit your submissions by logging into your account.</p>
+              <h3>Can I have my story deleted?</h3>
+              <p>Yes, just send us an e-mail</p>
             </div>
           </div>
         );
